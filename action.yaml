@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
+name: clang-format Linter
+description: Lint C/C++ code using clang-format.
+author: septs
+
+branding:
+  icon: check
+  color: green
+
+inputs:
+  path:
+    description: 'Path to the code to format'
+    default: '${{ github.workspace }}'
+  baseline:
+    description: 'Baseline version of "muttleyxd/clang-tools-static-binaries" (e.g., latest, master-<version>)'
+    default: 'latest'
+  version:
+    description: 'clang-format version to use (10 or higher)'
+    default: '20'
+  style:
+    description: 'Coding style'
+    default: 'file'
+  fallback-style:
+    description: 'Fallback style when no .clang-format file found'
+    default: 'LLVM'
+  extensions:
+    description: 'Space-separated file extensions to format'
+    default: >-
+      .h .hpp .hh .h++ .hxx
+      .c .cpp .cc .c++ .cxx
+      .ino .pde .proto .cu
+  warnings-as-errors:
+    description: 'Treat formatting warnings as errors'
+    default: 'true'
+  dry-run:
+    description: 'Report issues without modifying files'
+    default: 'true'
+
+outputs:
+  unformatted-files:
+    description: 'Newline-separated list of unformatted files'
+  unformatted-file-count:
+    description: 'Number of unformatted files'
+
+runs:
+  using: node24
+  main: dist/index.js

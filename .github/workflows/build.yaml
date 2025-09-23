@@ -1,0 +1,19 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: [README.md, docs]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+      - run: npm ci
+      - run: npm start
+      - run: git diff HEAD --name-only --exit-code
