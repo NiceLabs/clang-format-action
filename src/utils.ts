@@ -1,9 +1,8 @@
 import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import type { Inputs } from './inputs'
 
-export function getClangFormatBlobURL(inputs: Inputs): string {
+export function getClangFormatBlobURL(tag: string, version: string): string {
   function getPlatform() {
     const { platform, arch } = process
     if (platform === 'linux' && arch === 'x64') return 'linux-amd64'
@@ -17,9 +16,9 @@ export function getClangFormatBlobURL(inputs: Inputs): string {
     'muttleyxd',
     'clang-tools-static-binaries',
     'releases',
-    inputs.prebuiltTag,
+    tag,
     'download',
-    `clang-format-${inputs.version}_${getPlatform()}`,
+    `clang-format-${version}_${getPlatform()}`,
   )
   return new URL(pathname, 'https://github.com').toString()
 }

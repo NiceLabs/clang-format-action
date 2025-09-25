@@ -12,7 +12,10 @@ async function main() {
   const tmpdir = await getTempDir()
   const inputs = getInputs()
 
-  const program = await downloadTool(getClangFormatBlobURL(inputs), joinPath(tmpdir, 'clang-format'))
+  const program = await downloadTool(
+    getClangFormatBlobURL(inputs.prebuiltTag, inputs.version),
+    joinPath(tmpdir, process.platform === 'win32' ? 'clang-format.exe' : 'clang-format'),
+  )
   if (process.platform !== 'win32') await chmod(program, 0o755)
 
   await group('Version', () => exec(program, ['--version']))
