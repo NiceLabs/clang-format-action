@@ -11,8 +11,8 @@ inputs:
   path:
     description: 'Path to the code to format'
     default: '${{ github.workspace }}'
-  baseline:
-    description: 'Baseline version of "muttleyxd/clang-tools-static-binaries" (e.g., latest, master-<version>)'
+  prebuilt-tag:
+    description: 'Release tag of "muttleyxd/clang-tools-static-binaries" (e.g., latest, master-<version>)'
     default: 'latest'
   version:
     description: 'clang-format version to use (10 or higher)'

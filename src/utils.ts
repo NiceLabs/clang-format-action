@@ -17,7 +17,7 @@ export function getClangFormatBlobURL(inputs: Inputs): string {
     'muttleyxd',
     'clang-tools-static-binaries',
     'releases',
-    inputs.baseline,
+    inputs.prebuiltTag,
     'download',
     `clang-format-${inputs.version}_${getPlatform()}`,
   )

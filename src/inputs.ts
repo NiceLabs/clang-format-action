@@ -3,7 +3,7 @@ import { getBooleanInput, getInput } from '@actions/core'
 
 export interface Inputs {
   readonly path: string
-  readonly baseline: string
+  readonly prebuiltTag: string
   readonly version: string
   readonly style: string
   readonly fallbackStyle: string
@@ -13,13 +13,13 @@ export interface Inputs {
 }
 
 export function getInputs(): Inputs {
-  const baseline = getInput('baseline', { required: true, trimWhitespace: true })
+  const prebuiltTag = getInput('prebuilt-tag', { required: true, trimWhitespace: true })
   const version = getInput('version', { required: true, trimWhitespace: true })
-  assertBaseline(baseline)
+  assertBaseline(prebuiltTag)
   assertVersion(version)
   return Object.freeze({
     path: resolve(getInput('path', { required: true, trimWhitespace: true })),
-    baseline,
+    prebuiltTag,
     version,
     style: getInput('style', { required: true, trimWhitespace: true }),
     fallbackStyle: getInput('fallback-style', { required: true, trimWhitespace: true }),
@@ -34,10 +34,10 @@ export function getInputs(): Inputs {
   })
 }
 
-function assertBaseline(baseline: string): void {
-  if (baseline === 'latest') return
-  if (baseline.startsWith('master-')) return
-  throw new Error('The baseline must be "latest" or "master-<version>"')
+function assertBaseline(prebuiltTag: string): void {
+  if (prebuiltTag === 'latest') return
+  if (prebuiltTag.startsWith('master-')) return
+  throw new Error('The prebuilt-tag must be "latest" or "master-<version>"')
 }
 
 function assertVersion(version: string): void {
