@@ -2,6 +2,8 @@
 
 Lint C/C++ code using clang-format.
 
+Based on <https://github.com/muttleyxd/clang-tools-static-binaries> prebuilt binaries.
+
 ## Features
 
 - Runs [`clang-format`] on your codebase
