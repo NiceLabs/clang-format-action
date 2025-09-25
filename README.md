@@ -32,6 +32,17 @@ Place your `.clang-format` file in the repository root to customize formatting r
 
 See <https://clang.llvm.org/docs/ClangFormatStyleOptions.html>
 
+## FAQ
+
+1. Q: How to configure which version of clang-format was used?  
+A: Use `version` option. e.g. `version: 20`.
+2. Q: I want to format the code directly instead of raise a warning.  
+A: Use `dry-run: false`.
+3. Q: I want to exclude some files from format operation.  
+A: Add them into [.clang-format-ignore] file.
+4. Q: I want format a subdirectory only.  
+A: Use `path` option. e.g. `path: src`.
+
 ## LICENSE
 
 [MIT LICENSE](LICENSE.txt)
