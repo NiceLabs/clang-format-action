@@ -15,7 +15,7 @@ export interface Inputs {
 export function getInputs(): Inputs {
   const prebuiltTag = getInput('prebuilt-tag', { required: true, trimWhitespace: true })
   const version = getInput('version', { required: true, trimWhitespace: true })
-  assertBaseline(prebuiltTag)
+  assertPrebuiltTag(prebuiltTag)
   assertVersion(version)
   return Object.freeze({
     path: resolve(getInput('path', { required: true, trimWhitespace: true })),
@@ -34,9 +34,9 @@ export function getInputs(): Inputs {
   })
 }
 
-function assertBaseline(prebuiltTag: string): void {
-  if (prebuiltTag === 'latest') return
-  if (prebuiltTag.startsWith('master-')) return
+function assertPrebuiltTag(tag: string): void {
+  if (tag === 'latest') return
+  if (tag.startsWith('master-')) return
   throw new Error('The prebuilt-tag must be "latest" or "master-<version>"')
 }
 
