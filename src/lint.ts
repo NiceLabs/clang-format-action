@@ -10,12 +10,12 @@ export async function lint(program: string, inputs: Inputs, fileListPath: string
   const result = await getExecOutput(program, Array.from(buildArguments(inputs, fileListPath)), { cwd: inputs.path })
   const errors = parseErrors(result.stderr)
 
-  const emit = inputs.asError ? error : warning
+  const annotation = inputs.asError ? error : warning
   for (const [filePath, lines] of errors.entries()) {
     const file = joinPath(inputs.path, filePath)
-    for (const [startLine, endLine] of lines) {
-      emit(message, { title, file, startLine, endLine })
-    }
+    let startLine = Math.min(...lines)
+    if (lines.size > 1) startLine = 1
+    annotation(message, { title, file, startLine })
   }
 
   setOutput('unformatted-files', Array.from(errors.keys()).join('\n'))
@@ -32,18 +32,18 @@ export async function lint(program: string, inputs: Inputs, fileListPath: string
     .write()
 }
 
-function parseErrors(stderr: string): ReadonlyMap<string, LineRange> {
-  const errors = new Map<string, LineRange>()
+function parseErrors(stderr: string): ReadonlyMap<string, ReadonlySet<number>> {
+  const errors = new Map<string, Set<number>>()
 
   function get(name: string) {
-    if (!errors.has(name)) errors.set(name, new LineRange())
+    if (!errors.has(name)) errors.set(name, new Set())
     return errors.get(name)!
   }
 
   for (const line of stderr.split('\n')) {
     const match = /^(?<file>\S+):(?<lineNo>\d+):(?<colNo>\d+):/.exec(line)
     if (match === null || match.groups === undefined) continue
-    get(match.groups.file).add(match.groups.lineNo)
+    get(match.groups.file).add(Number.parseInt(match.groups.lineNo, 10))
   }
   return errors
 }
@@ -61,32 +61,4 @@ function* buildArguments(inputs: Inputs, fileListPath: string): Iterable<string>
   yield inputs.fallbackStyle
   yield '--files'
   yield fileListPath
-}
-
-class LineRange implements Iterable<readonly [number, number]> {
-  private lines = new Set<number>()
-
-  add(line: string | number) {
-    if (typeof line === 'string') line = Number.parseInt(line, 10)
-    this.lines.add(line)
-  }
-
-  *[Symbol.iterator](): Iterator<readonly [number, number]> {
-    if (this.lines.size === 0) return
-    const values = Array.from(this.lines) // copy
-    values.sort((a, b) => a - b) // sort ascending
-    let start = values[0]
-    let end = values[0]
-    for (let index = 1; index < values.length; index++) {
-      const current = values[index]
-      if (current === end + 1) {
-        end = current
-      } else {
-        yield [start, end]
-        start = current
-        end = current
-      }
-    }
-    yield [start, end]
-  }
 }
